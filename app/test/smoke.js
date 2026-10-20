@@ -16,8 +16,9 @@ if (!audio || !fs.existsSync(audio)) {
 
 (async () => {
   const userData = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'audio2text-test-'));
+  // Set SMOKE_EXE to a packaged "Audio to text.exe" to test the built app instead of the source.
   const app = await electron.launch({
-    args: [path.join(__dirname, '..')],
+    ...(process.env.SMOKE_EXE ? { executablePath: process.env.SMOKE_EXE } : { args: [path.join(__dirname, '..')] }),
     bypassCSP: true,
     env: { ...process.env, AUDIO2TEXT_USER_DATA: userData },
   });
