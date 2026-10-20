@@ -1,0 +1,69 @@
+{
+  "name": "audio-to-text",
+  "version": "1.0.0",
+  "description": "Desktop app that transcribes audio files (mp3, ogg, wav, ...) to .txt or .md, fully offline.",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "prepare-python": "node scripts/prepare-python.js",
+    "dist": "node scripts/prepare-python.js && electron-builder --win nsis --x64",
+    "smoke": "node test/smoke.js"
+  },
+  "author": "Jon Coombs",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^26.0.12",
+    "playwright-core": "^1.49.1"
+  },
+  "build": {
+    "appId": "com.joncoombs.audiototext",
+    "productName": "Audio to text",
+    "artifactName": "Audio-to-text-Setup-${version}.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "python",
+        "to": "python",
+        "filter": [
+          "**/*",
+          "!**/__pycache__/**"
+        ]
+      },
+      {
+        "from": "../audio2text.py",
+        "to": "audio2text.py"
+      }
+    ],
+    "asar": true,
+    "compression": "normal",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Audio to text",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}
